@@ -1,0 +1,62 @@
+* {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+body {
+    display:flex;
+    justify-content: center;
+    padding: 32px;
+}
+.container {
+    display:flex;
+    flex-direction: column;
+    width:400px;
+    padding:32px;
+    border: 2px solid black;
+    flex: 0 1 auto;
+    background-color: aquamarine;
+}
+
+.display {
+    text-align: right;
+    border: 2px solid black;
+    margin: 32px;
+    height:92px;
+    background-color: beige;
+    width: 298px;
+    align-self: center;
+}
+
+.buttons {
+    display:flex;
+    flex-direction: column;
+    height: 400px;
+
+    justify-content: center;
+    align-items: center;
+    flex:1;
+}
+
+.row {
+    display:flex;
+    flex:1;
+}
+
+button {
+    height:72px;
+    width:72px;
+    margin:2px;
+    background-color: white;
+    border:2px solid black;
+    flex:0 1 auto;
+    border-radius: 4px;
+}
+
+button.zero {
+    width: 148px;
+}
+
+
+
+
+
