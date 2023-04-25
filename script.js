@@ -30,13 +30,21 @@ function update(buttonPressed,calculation) {
         calculation.inputValue = displayValue;
         initialiseInputs(calculation);
         console.log(buttonPressed)
+    } else if (buttonPressed === 'allClear') {
+        allClear();
+        return;
+    } else if (buttonPressed === 'clear') {
+        displayValue = 0;
+        calculation.operator = '';
+        return;
     } else {
-        calculation.operator = buttonPressed;
-        if (i===0) {
+        if (calculation.operator === '') {
+            calculation.operator = buttonPressed;
             calculation.currentValue = displayValue;
             displayValue = 0;
             return;
         } else {
+            calculation.operator = buttonPressed;
             calculation.inputValue = displayValue;
             initialiseInputs(calculation);
             console.log(buttonPressed)
@@ -46,6 +54,7 @@ function update(buttonPressed,calculation) {
 }
 
 function displayNumber (buttonPressed) {
+    displayValue = chainCalc ? 0 : displayValue;
     if (displayValue === 0) {
         displayValue = buttonPressed;
         display.textContent = displayValue;
@@ -55,13 +64,43 @@ function displayNumber (buttonPressed) {
         display.textContent = displayValue;
         console.log(buttonPressed)
     }
+    chainCalc = false;
 }
 
 function initialiseInputs (calculation) {
     calculation.result = calculate(calculation);
     display.textContent = calculation.result;
     displayValue = calculation.result;
-    newCalc = true;
+    newCalc();
+}
+
+function newCalc() {
+    i++;
+    calculation[i] = {
+        currentValue:displayValue,
+        inputValue:'0',
+        operator:'',
+        result:'',
+        printString:'',
+    }
+    chainCalc = true;
+}
+
+function allClear () {
+    calculation.splice(0,calculation.length);
+    i = 0;
+    displayValue = 0;
+    chainCalc = false;
+    display.textContent = '0';
+    calculation =[
+        {
+        currentValue:'null',
+        inputValue:'0',
+        operator:'',
+        result:'',
+        printString:'',
+        }
+    ]
 }
 
 let calculation =[
@@ -72,21 +111,14 @@ let calculation =[
     result:'',
     printString:'',
     }
-]
-;
+];
 let displayValue = 0;
 let i = 0;
 let buttonPressed;
-let newCalc = false;
+let chainCalc = false;
 const display = document.querySelector('.display');
 const buttons = document.querySelectorAll('button');
 buttons.forEach(button => button.addEventListener('click', function (e) {
     const buttonPressed = e.target.id;
     update(buttonPressed,calculation[i]);
 }))
-if (newCalc) {
-    i++;
-    calculation[i].currentValue = displayValue;
-    displayValue = 0;
-    newCalc = false;
-}
