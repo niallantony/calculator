@@ -43,8 +43,7 @@ function update(buttonPressed,calculation) {
         allClear();
         return;
     } else if (buttonPressed === 'clear') {
-        displayValue = 0;
-        calculation.operator = '';
+        clear(calculation);
         return;
     } else if (buttonPressed === 'point') {
         decimal(calculation);
@@ -62,6 +61,20 @@ function update(buttonPressed,calculation) {
         }
     }
     checkDecimal(displayValue);
+}
+
+function clear(calculation) {
+    if (isNew) {
+        calculation.currentValue = 0;
+        displayValue = 0;
+        display.textContent = displayValue;
+    } else {
+        calculation.inputValue = 0;
+        calculation.operator = '';
+        displayValue = calculation.currentValue;
+        display.textContent = displayValue;
+        isNew = true;
+    }
 }
 
 function checkDecimal(value){
@@ -112,15 +125,15 @@ function initialiseInputs (calculation) {
 }
 
 function displayResult(calculation) {
-    const resultValue = truncate(calculation.result);
+    const resultValue = truncate(calculation.result,10);
     display.textContent = resultValue;
     displayValue = calculation.result;
     createPrintString(calculation);
 }
 
-function truncate (input) {
+function truncate (input,limit) {
     const inputString = input.toString();
-    const truncatedValue = inputString.length > 10 ? inputString.slice(0,9) : inputString;
+    const truncatedValue = inputString.length > limit ? inputString.slice(0,limit-1) : inputString;
     return truncatedValue
 }
 
@@ -166,8 +179,8 @@ function findOperator(calculation) {
 
 function createPrintString(calculation) {
     const operatorSym = findOperator (calculation);
-    const truncatedCurVal = truncate(calculation.currentValue);
-    const truncatedResult = truncate(calculation.result);
+    const truncatedCurVal = truncate(calculation.currentValue,10);
+    const truncatedResult = truncate(calculation.result,10);
     calculation.printString = `${truncatedCurVal} ${operatorSym} ${calculation.inputValue} = ${truncatedResult}`
     printFeed(calculation.printString);
 }
@@ -186,7 +199,7 @@ function createLine(toPrint){
     decorAfter.setAttribute('class','print-out');
     output.setAttribute('class','print-out');
     line.setAttribute('class','line');
-    output.textContent = toPrint;
+    output.textContent = truncate(toPrint,30);
     decorBefore.textContent = '<';
     decorAfter.textContent = '>';
     line.appendChild(decorBefore);

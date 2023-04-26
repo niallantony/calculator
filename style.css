@@ -20,15 +20,19 @@ body {
 }
 
 .roll {
+    transform: translate3d(3px, 3px, 0);
     align-self: center;
     width: 300px;
     padding: 0 8px 0 8px;
     background-color: white ;
+
 }
 
 .inactive {
-    background-color: grey;
+    background-color: whitesmoke;
     color: dimgray;
+    transform: translate3d(2px,2px,0);
+    box-shadow: 0px 0px;
 }
 
 .roll:after{
@@ -45,6 +49,7 @@ body {
     position: relative;
     top:12px;
     left:-8px;
+
 }
 
 .container {
@@ -59,7 +64,17 @@ body {
     padding:32px;
     border: 2px solid black;
     flex: 1;
-    background-color: aquamarine;
+    background: linear-gradient(
+        45deg,
+        #F4F4F4 85%,
+        red 85% 86%,
+        yellow 86% 87%,
+        lightgreen 87% 88%,
+        cyan 88% 89%,
+        purple 89% 90%,
+        #F4F4F4 90%
+        );
+    box-shadow: 8px 8px black;
 }
 
 .display {
@@ -80,7 +95,7 @@ body {
     display:flex;
     flex-direction: column;
     height: 400px;
-    gap:2px;
+    gap:4px;
     justify-content: center;
     align-items: center;
     flex:1;
@@ -90,7 +105,9 @@ body {
     display:flex;
     flex:1;
     justify-content: center;
-    gap:2px;
+    gap:4px;
+    position:relative;
+    top: -2px; left: -2px;
 }
 
 button {
@@ -102,6 +119,13 @@ button {
     flex:0 1 auto;
     border-top-right-radius: 4px;
     font-size: 2rem;
+    box-shadow: 2px 2px black;
+}
+
+button:active {
+    transform: translate3d(2px,2px,0);
+
+    box-shadow: 0px 0px;
 }
 
 button.zero {
