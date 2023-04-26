@@ -28,8 +28,8 @@ function update(buttonPressed,calculation) {
         displayNumber(buttonPressed);
     } else if (buttonPressed === 'equ') {
         calculation.inputValue = displayValue;
+        chainOperator='';
         initialiseInputs(calculation);
-        console.log(buttonPressed)
     } else if (buttonPressed === 'allClear') {
         allClear();
         return;
@@ -44,10 +44,9 @@ function update(buttonPressed,calculation) {
             displayValue = 0;
             return;
         } else {
-            calculation.operator = buttonPressed;
+            chainOperator = buttonPressed;
             calculation.inputValue = displayValue;
             initialiseInputs(calculation);
-            console.log(buttonPressed)
         }
     }
 
@@ -55,23 +54,40 @@ function update(buttonPressed,calculation) {
 
 function displayNumber (buttonPressed) {
     displayValue = chainCalc ? 0 : displayValue;
-    if (displayValue === 0) {
+    if (displayValue == 0) {
         displayValue = buttonPressed;
         display.textContent = displayValue;
-        console.log(buttonPressed);
-    } else {
+        currentDigits = displayValue.length;
+    } else if(currentDigits < 10) {
         displayValue = `${displayValue}${buttonPressed}`;
         display.textContent = displayValue;
-        console.log(buttonPressed)
-    }
+        currentDigits = displayValue.length;
+    } 
     chainCalc = false;
 }
 
 function initialiseInputs (calculation) {
-    calculation.result = calculate(calculation);
-    display.textContent = calculation.result;
-    displayValue = calculation.result;
+    if (calculation.inputValue == 0 && calculation.operator === 'div') {
+        calculation.result = divideByZero(calculation);
+    } else {
+        calculation.result = calculate(calculation);
+    }
+    console.log(calculation.result);
+    displayResult(calculation);
     newCalc();
+}
+
+function displayResult(calculation) {
+    const resultValue = truncate(calculation.result);
+    display.textContent = resultValue;
+    displayValue = calculation.result;
+    createPrintString(calculation);
+}
+
+function truncate (input) {
+    const inputString = input.toString();
+    const truncatedValue = inputString.length > 10 ? inputString.slice(0,9) : inputString;
+    return truncatedValue
 }
 
 function newCalc() {
@@ -79,7 +95,7 @@ function newCalc() {
     calculation[i] = {
         currentValue:displayValue,
         inputValue:'0',
-        operator:'',
+        operator:chainOperator,
         result:'',
         printString:'',
     }
@@ -97,10 +113,61 @@ function allClear () {
         currentValue:'null',
         inputValue:'0',
         operator:'',
-        result:'',
+        result:'0',
         printString:'',
         }
     ]
+    printFeed('********');
+}
+
+function findOperator(calculation) {
+    switch (calculation.operator) {
+        case 'add' : return '+';
+        case 'sub' : return '-';
+        case 'mul' : return '\xD7';
+        case 'div' : return '\xF7';
+    }
+}
+
+function createPrintString(calculation) {
+    const operatorSym = findOperator (calculation);
+    const truncatedCurVal = truncate(calculation.currentValue);
+    const truncatedResult = truncate(calculation.result);
+    calculation.printString = `${truncatedCurVal} ${operatorSym} ${calculation.inputValue} = ${truncatedResult}`
+    printFeed(calculation.printString);
+}
+
+function divideByZero(a) {
+    allClear();
+    return String.fromCodePoint(0x1F92E);
+}
+
+function createLine(toPrint){
+    const output = document.createElement('div');
+    const decorBefore = document.createElement('div');
+    const decorAfter = document.createElement('div');
+    const line = document.createElement('div');
+    decorBefore.setAttribute('class','print-out');
+    decorAfter.setAttribute('class','print-out');
+    output.setAttribute('class','print-out');
+    line.setAttribute('class','line');
+    output.textContent = toPrint;
+    decorBefore.textContent = '<';
+    decorAfter.textContent = '>';
+    line.appendChild(decorBefore);
+    line.appendChild(output);
+    line.appendChild(decorAfter);
+    return line;
+}
+
+function printFeed(toPrint){
+    const feed = createLine(toPrint);
+    if (previousFeed != undefined) {
+        roll.insertBefore(feed,previousFeed);
+    } else {
+        roll.appendChild(feed);
+    }
+    previousFeed = feed;
 }
 
 let calculation =[
@@ -108,16 +175,21 @@ let calculation =[
     currentValue:'null',
     inputValue:'0',
     operator:'',
-    result:'',
+    result:'0',
     printString:'',
     }
 ];
-let displayValue = 0;
+
+let displayValue = '0';
 let i = 0;
 let buttonPressed;
 let chainCalc = false;
+let chainOperator ='';
+let currentDigits = displayValue.length;
+let previousFeed;
 const display = document.querySelector('.display');
 const buttons = document.querySelectorAll('button');
+const roll = document.querySelector('.roll');
 buttons.forEach(button => button.addEventListener('click', function (e) {
     const buttonPressed = e.target.id;
     update(buttonPressed,calculation[i]);

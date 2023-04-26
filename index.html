@@ -4,43 +4,46 @@
         <meta charset="utf-8">
         <title>Calculato</title>
         <link rel="stylesheet" href="style.css">
-        <script src="script.js"></script>
+        <script src="script.js" defer></script>
     </head>
     <body>
         <div class="container">
-            <div class="display">
-
+            <div class="calculator">
+                <div class="display">
+                    0
+                </div>
+                <div class="buttons">
+                    <div class="row">
+                        <button class="zero" id="allClear">AC</button>
+                        <button id="clear">C</button>
+                        <button id="add">+</button>
+                    </div>
+                    <div class="row">
+                        <button id="1">1</button>
+                        <button id="2">2</button>
+                        <button id="3">3</button>
+                        <button id="sub">-</button>
+                    </div>
+                    <div class="row">
+                        <button id="4">4</button>
+                        <button id="5">5</button>
+                        <button id="6">6</button>
+                        <button id="mul">&#215</button>
+                    </div>
+                    <div class="row">
+                        <button id="7">7</button>
+                        <button id="8">8</button>
+                        <button id="9">9</button>
+                        <button id="div">&#247</button>
+                    </div>
+                    <div class="row">
+                        <button class="zero" id="0">0</button>
+                        <button id="point">.</button>
+                        <button id="equ">=</button>
+                    </div>
+                </div>
             </div>
-            <div class="buttons">
-                <div class="row">
-                    <button></button>
-                    <button></button>
-                    <button></button>
-                    <button></button>
-                </div>
-                <div class="row">
-                    <button></button>
-                    <button></button>
-                    <button></button>
-                    <button></button>
-                </div>
-                <div class="row">
-                    <button></button>
-                    <button></button>
-                    <button></button>
-                    <button></button>
-                </div>
-                <div class="row">
-                    <button></button>
-                    <button></button>
-                    <button></button>
-                    <button></button>
-                </div>
-                <div class="row">
-                    <button class="zero"></button>
-                    <button></button>
-                    <button></button>
-                </div>
+            <div class="roll">
             </div>
         </div>
     </body>
