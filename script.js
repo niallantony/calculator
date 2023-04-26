@@ -20,6 +20,7 @@ function calculate (calculation) {
         case 'sub' : return subtract(calculation.currentValue,calculation.inputValue); break;
         case 'mul' : return multiply(calculation.currentValue,calculation.inputValue); break;
         case 'div' : return divide(calculation.currentValue,calculation.inputValue); break;
+        default : return '';
     }
 }
 function update(buttonPressed,calculation) {
@@ -27,9 +28,17 @@ function update(buttonPressed,calculation) {
     if (isNumber) {
         displayNumber(buttonPressed);
     } else if (buttonPressed === 'equ') {
-        calculation.inputValue = displayValue;
-        chainOperator='';
-        initialiseInputs(calculation);
+        if (calculation.operator != '' && !chainCalc) {
+            calculation.inputValue = displayValue;
+            initialiseInputs(calculation);
+            chainOperator = calculation.operator;
+            isNew = true;
+        } else if (chainCalc) {
+            calculation.inputValue = chainValue;
+            calculation.operator = chainOperator;
+            initialiseInputs(calculation);
+            isNew = true;
+        };
     } else if (buttonPressed === 'allClear') {
         allClear();
         return;
@@ -37,24 +46,48 @@ function update(buttonPressed,calculation) {
         displayValue = 0;
         calculation.operator = '';
         return;
+    } else if (buttonPressed === 'point') {
+        decimal(calculation);
     } else {
-        if (calculation.operator === '') {
-            calculation.operator = buttonPressed;
-            calculation.currentValue = displayValue;
-            displayValue = 0;
-            return;
-        } else {
+        if  (!isNew) {
             chainOperator = buttonPressed;
             calculation.inputValue = displayValue;
             initialiseInputs(calculation);
+        } else {
+            calculation.operator = buttonPressed;
+            calculation.currentValue = displayValue;
+            displayValue = 0;
+            isNew = false;
+            return;
         }
     }
+    checkDecimal(displayValue);
+}
 
+function checkDecimal(value){
+    const valueString = value.toString();
+    hasPoint = valueString.includes('.') ? true : false;
+    if (hasPoint && !chainCalc) {
+        decimalButton.setAttribute('class','inactive');
+    } else {
+        decimalButton.removeAttribute('class','inactive');
+    }
+}
+
+function decimal() {
+    displayValue = chainCalc ? 0 : displayValue;
+    checkDecimal(displayValue);
+    if (!hasPoint) {
+        displayValue = `${displayValue}.`;
+        display.textContent = displayValue;
+        currentDigits = displayValue.length;
+        chainCalc = false;
+    }
 }
 
 function displayNumber (buttonPressed) {
     displayValue = chainCalc ? 0 : displayValue;
-    if (displayValue == 0) {
+    if (displayValue.toString() === '0') {
         displayValue = buttonPressed;
         display.textContent = displayValue;
         currentDigits = displayValue.length;
@@ -74,6 +107,7 @@ function initialiseInputs (calculation) {
     }
     console.log(calculation.result);
     displayResult(calculation);
+    chainValue = calculation.inputValue;
     newCalc();
 }
 
@@ -92,6 +126,7 @@ function truncate (input) {
 
 function newCalc() {
     i++;
+    !isNew;
     calculation[i] = {
         currentValue:displayValue,
         inputValue:'0',
@@ -185,11 +220,15 @@ let i = 0;
 let buttonPressed;
 let chainCalc = false;
 let chainOperator ='';
+let chainValue = '';
 let currentDigits = displayValue.length;
 let previousFeed;
+let isNew = true;
+let hasPoint = false;
 const display = document.querySelector('.display');
 const buttons = document.querySelectorAll('button');
 const roll = document.querySelector('.roll');
+const decimalButton = document.querySelector('#point');
 buttons.forEach(button => button.addEventListener('click', function (e) {
     const buttonPressed = e.target.id;
     update(buttonPressed,calculation[i]);

@@ -26,6 +26,11 @@ body {
     background-color: white ;
 }
 
+.inactive {
+    background-color: grey;
+    color: dimgray;
+}
+
 .roll:after{
     background: 
                 linear-gradient(-45deg, transparent 17px, white 0), 
